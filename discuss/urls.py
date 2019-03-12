@@ -18,7 +18,7 @@ from django.urls import path, include
 from core import views
 
 urlpatterns = [
-    path('', views.home, name='home'),
+    path('', include('boards.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/signup/', views.signup, name='signup'),
     path('admin/', admin.site.urls),
