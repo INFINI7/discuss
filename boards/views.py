@@ -28,7 +28,7 @@ def new_topic(request, board_pk):
             topic.starter = user
             topic.save()
             Post.objects.create(message=form.cleaned_data.get('message'), topic=topic, created_by=user)
-            return redirect('board_topics', pk=board.pk)
+            return redirect('board_topics', board_pk=board_pk)
     else:
         form = NewTopicForm()
     return render(request, 'boards/new_topic.html', {'board': board, 'form': form})
