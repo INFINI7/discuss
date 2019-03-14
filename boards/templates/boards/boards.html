@@ -26,8 +26,22 @@
             <small class="text-muted d-block">{{ board.description }}</small>
           </td>
           <td class="align-middle">{{ board.topics.count }}</td>
-          <td class="align-middle">0</td>
-          <td></td>
+          <td class="align-middle">{{ board.get_posts_count }}</td>
+          <td class="align-middle">
+            {% with board.get_last_post as post %}
+              {% if post %}
+                <small>
+                  <a href="{% url 'topic_posts' board.pk post.topic.pk %}">
+                    By {{ post.created_by }} at {{ post.created_at }}
+                  </a>
+                </small>
+              {% else %}
+                <small class="text-muted">
+                  <em>No post yet</em>
+                </small>
+              {% endif %}
+            {% endwith %}
+          </td>
         </tr>
       {% endfor %}
     </tbody>
