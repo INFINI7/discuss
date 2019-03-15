@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
+from django.utils import timezone
 from .models import Board, Topic, Post
-from .forms import NewTopicForm, ReplyTopicForm
+from .forms import NewTopicForm, PostForm
 
 
 def board_list(request):
@@ -43,9 +44,9 @@ def topic_posts(request, board_pk, topic_pk):
 
 @ login_required
 def reply_topic(request, board_pk, topic_pk):
-    topic = get_object_or_404(Topic, board__pk=board_pk, pk=topic_pk)
+    topic = get_object_or_404(Topic, pk=topic_pk)
     if request.method == 'POST':
-        form = ReplyTopicForm(request.POST)
+        form = PostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
             post.topic = topic
@@ -53,5 +54,20 @@ def reply_topic(request, board_pk, topic_pk):
             post.save()
             return redirect('topic_posts', board_pk=board_pk, topic_pk=topic_pk)
     else:
-        form = ReplyTopicForm()
+        form = PostForm()
     return render(request, 'boards/reply_topic.html', {'topic': topic, 'form': form})
+
+
+def edit_post(request, board_pk, topic_pk, post_pk):
+    post = get_object_or_404(Post, pk=post_pk)
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post.message = form.cleaned_data.get('message')
+            post.updated_by = request.user
+            post.updated_at = timezone.now()
+            post.save()
+            return redirect('topic_posts', board_pk=board_pk, topic_pk=topic_pk)
+    else:
+        form = PostForm(instance=post)
+    return render(request, 'boards/edit_post.html', {'post': post, 'form': form})

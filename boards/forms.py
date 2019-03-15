@@ -10,7 +10,9 @@ class NewTopicForm(forms.ModelForm):
         fields = ['subject', 'message']
 
 
-class ReplyTopicForm(forms.ModelForm):
+class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['message']
+        help_texts = {'message': 'Max Length is 4000'}
+        widgets = {'message': forms.Textarea(attrs={'rows': 5})}
