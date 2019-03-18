@@ -16,5 +16,6 @@
     {% csrf_token %}
     {% include 'includes/form.html' %}
     <button class="btn btn-success" type="submit">Edit</button>
+    <a class="btn btn-secondary" href="{% url 'topic_posts' post.topic.board.pk post.topic.pk %}">Cancel</a>
   </form>
 {% endblock %}

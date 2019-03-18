@@ -21,5 +21,6 @@ urlpatterns = [
     path('', include('boards.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/signup/', views.signup, name='signup'),
+    path('accounts/myaccount/', views.UserUpdateView.as_view(), name='my_account'),
     path('admin/', admin.site.urls),
 ]

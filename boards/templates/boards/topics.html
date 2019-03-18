@@ -33,23 +33,29 @@
       {% endfor %}
     </tbody>
   </table>
-  {% if topics.has_other_pages %}
-    <nav class="mb-4" aria-label="Topics paginator">
+  {% with topics as pages %}
+    {% include 'includes/pagination.html' %}
+  {% endwith %}
+
+{% comment %}  {% if is_paginated %}
+    <nav aria-label="Topics pagination" class="mb-4">
       <ul class="pagination">
-        {% if topics.has_previous %}
+        {% if page_obj.has_previous %}
           <li class="page-item">
-            <a class="page-link" href="?page={{ topics.previous_page_number }}">Previous</a>
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
           </li>
         {% else %}
           <li class="page-item disabled">
             <span class="page-link">Previous</span>
           </li>
         {% endif %}
-        {% for page_num in topics.paginator.page_range %}
-          {% if page_num == topics.number %}
+
+        {% for page_num in paginator.page_range %}
+          {% if page_obj.number == page_num %}
             <li class="page-item active">
               <span class="page-link">
                 {{ page_num }}
+                <span class="sr-only">(current)</span>
               </span>
             </li>
           {% else %}
@@ -58,9 +64,10 @@
             </li>
           {% endif %}
         {% endfor %}
-        {% if topics.has_next %}
+
+        {% if page_obj.has_next %}
           <li class="page-item">
-            <a class="page-link" href="?page={{ topics.next_page_number }}">Next</a>
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
           </li>
         {% else %}
           <li class="page-item disabled">
@@ -69,5 +76,5 @@
         {% endif %}
       </ul>
     </nav>
-  {% endif %}
+  {% endif %}{% endcomment %}
 {% endblock %}
