@@ -72,11 +72,14 @@ def new_topic(request, board_pk):
 
 def topic_posts(request, board_pk, topic_pk):
     topic = get_object_or_404(Topic, board__pk=board_pk, pk=topic_pk)
-    topic.views += 1
-    topic.save()
+    session_key = 'viewed_topic_%d' % topic.pk
+    if not request.session.get(session_key, False):
+        topic.views += 1
+        topic.save()
+        request.session[session_key] = True
     queryset = topic.posts.order_by('created_at')
     page = request.GET.get('page', 1)
-    paginator = Paginator(queryset, 2)
+    paginator = Paginator(queryset, 3)
 
     try:
         posts = paginator.page(page)
@@ -115,6 +118,8 @@ def reply_topic(request, board_pk, topic_pk):
             post.topic = topic
             post.created_by = request.user
             post.save()
+            topic.last_updated = timezone.now()
+            topic.save()
             return redirect('topic_posts', board_pk=board_pk, topic_pk=topic_pk)
     else:
         form = PostForm()

@@ -27,6 +27,9 @@ class Topic(models.Model):
     def __str__(self):
         return self.subject
 
+    def get_last_ten_posts(self):
+        return self.posts.order_by('-created_at')[:10]
+
 
 class Post(models.Model):
     message = models.TextField(max_length=4000)
